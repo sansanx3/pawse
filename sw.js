@@ -1,4 +1,4 @@
-const CACHE = 'pawse-v2';
+const CACHE = 'pawse-v3';
 
 // App shell — everything needed to run offline
 const SHELL = [
