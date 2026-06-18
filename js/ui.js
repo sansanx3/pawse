@@ -7,13 +7,6 @@
 // maps it to markup.
 // ══════════════════════════════════════════════════════════════════
 
-import {
-  STAGE, COPY, state, setRenderCallback,
-  goTo, goBack, reset,
-  goDontBuy, goBuyIt, goNotYet,
-  openHistory, closeHistory, clearHistory,
-} from './logic.js';
-
 // ── Inline SVG icons ───────────────────────────────────────────────
 
 const ICON = {
@@ -102,13 +95,13 @@ function screenHTML() {
 
   if (s === 'scarcity') return `
     ${eyebrow(s)}${question(s)}
-    ${choice('It's genuinely scarce', 'btn-scarce-yes')}
-    ${choice('I'm just impatient', 'btn-scarce-no')}`;
+    ${choice("It's genuinely scarce", 'btn-scarce-yes')}
+    ${choice("I'm just impatient", 'btn-scarce-no')}`;
 
   if (s === 'createSpace') return `
     ${eyebrow(s)}${question(s)}
     <p class="body-text">${esc(COPY.createSpace.body)}</p>
-    ${choice('I've created that space — continue', 'btn-space-created', true)}`;
+    ${choice("I've created that space — continue", 'btn-space-created', true)}`;
 
   if (s === 'trackRecord') return `
     ${eyebrow(s)}${question(s)}
@@ -117,14 +110,14 @@ function screenHTML() {
 
   if (s === 'tested') return `
     ${eyebrow(s)}${question(s)}
-    ${choice('Yes, I've actually tried it', 'btn-tested-yes')}
+    ${choice("Yes, I've actually tried it", 'btn-tested-yes')}
     ${choice('Not yet — only imagined it', 'btn-tested-no')}`;
 
   if (s === 'notYet') return outcome({
     icon: ICON.clockAmber, bg: '#F4E8D6', color: '#B5762A',
     title: 'Not yet',
-    subtitle: 'This isn't a no — find a way to test it first.',
-    bodyText: 'Try it, borrow it, ask someone who's used it, or just let time pass and see if the want survives.',
+    subtitle: "This isn't a no — find a way to test it first.",
+    bodyText: "Try it, borrow it, ask someone who's used it, or just let time pass and see if the want survives.",
   });
 
   if (s === 'feel') return `
@@ -165,7 +158,7 @@ function screenHTML() {
 
   if (s === 'dontBuy') return outcome({
     icon: ICON.xRed, bg: '#F3E2E0', color: '#9B3C3C',
-    title: 'Don't buy',
+    title: "Don't buy",
     subtitle: state.dontBuyReason,
   });
 
@@ -215,7 +208,7 @@ function historyHTML() {
 
 // ── Render ─────────────────────────────────────────────────────────
 
-export function render() {
+function render() {
   const app = document.getElementById('app');
   if (!app) return;
   app.innerHTML = state.showHistory ? historyHTML() : navBar() + screenHTML();

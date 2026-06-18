@@ -4,17 +4,11 @@ A personal purchase decision matrix. When something catches your eye, Pawse walk
 
 ## How to run
 
-Serve the folder with any static file server. The simplest option with no install:
+Open `index.html` directly in any browser — no server needed. Double-click the file or drag it into a browser window.
 
-```sh
-npx serve .
-```
+It also works when deployed to any static host (GitHub Pages, Netlify, etc.).
 
-Then open `http://localhost:3000` in your browser.
-
-ES modules and the service worker both require HTTP (not `file://`), so opening `index.html` directly won't work. Any static server will do — `npx serve`, Python's `http.server`, Caddy, nginx, etc.
-
-To install as a home screen app: open the served URL on your phone and use your browser's "Add to Home Screen" option. The service worker will cache the app shell so it works offline after first load.
+To install as a home screen app: open the hosted URL on your phone and use your browser's "Add to Home Screen" option. The service worker will cache the app shell so it works offline after first load.
 
 ## Project layout
 
@@ -28,7 +22,7 @@ js/
   logic.js          Decision flow: stages, questions, state, transitions
   storage.js        localStorage helpers (all keys prefixed pawse:)
   ui.js             Rendering and event binding — entry point
-index.html          App shell: meta tags, font links, CSS link, module script
+index.html          App shell: meta tags, font links, CSS link, three script tags
 manifest.json       Web App Manifest (PWA install metadata)
 sw.js               Service worker — caches the app shell for offline use
 ```

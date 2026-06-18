@@ -6,11 +6,9 @@
 // This file has no knowledge of the DOM or how screens are rendered.
 // ══════════════════════════════════════════════════════════════════
 
-import { storeSave, storeGet, storeDelete, storeListKeys } from './storage.js';
-
 // ── Stage labels (eyebrow text shown above each question) ──────────
 
-export const STAGE = {
+const STAGE = {
   urgent:      'Pace check',
   scarcity:    'Pace check',
   createSpace: 'Pace check',
@@ -26,7 +24,7 @@ export const STAGE = {
 
 // ── All question text, hints, and body copy ────────────────────────
 
-export const COPY = {
+const COPY = {
   urgent: {
     question: 'Feels urgent?',
     hint: 'Most “decide now” feelings turn out to be false alarms.',
@@ -75,7 +73,7 @@ export const COPY = {
 
 // ── App state ──────────────────────────────────────────────────────
 
-export const state = {
+const state = {
   screen:       'start',
   itemName:     '',
   stillPlanned: false,
@@ -89,18 +87,18 @@ export const state = {
 // ui.js injects its render function here so logic can trigger re-renders
 // without creating a circular import between logic ↔ ui.
 let _render = () => {};
-export function setRenderCallback(fn) { _render = fn; }
+function setRenderCallback(fn) { _render = fn; }
 
 // ── Navigation ─────────────────────────────────────────────────────
 
-export function goTo(next, sideEffect) {
+function goTo(next, sideEffect) {
   state.navStack = [...state.navStack, { screen: state.screen, stillPlanned: state.stillPlanned }];
   if (sideEffect) sideEffect();
   state.screen = next;
   _render();
 }
 
-export function goBack() {
+function goBack() {
   if (state.navStack.length === 0) return;
   const last = state.navStack[state.navStack.length - 1];
   state.navStack = state.navStack.slice(0, -1);
@@ -109,7 +107,7 @@ export function goBack() {
   _render();
 }
 
-export function reset() {
+function reset() {
   state.screen = 'start';
   state.itemName = '';
   state.stillPlanned = false;
@@ -136,25 +134,25 @@ function logOutcome(outcome, reason) {
   }
 }
 
-export function goDontBuy(reason) {
+function goDontBuy(reason) {
   state.dontBuyReason = reason;
   goTo('dontBuy');
   logOutcome("Don't buy", reason);
 }
 
-export function goBuyIt() {
+function goBuyIt() {
   goTo('buyIt');
   logOutcome('Buy it', '');
 }
 
-export function goNotYet() {
+function goNotYet() {
   goTo('notYet');
   logOutcome('Not yet', "Hasn't been tested");
 }
 
 // ── History ────────────────────────────────────────────────────────
 
-export function openHistory() {
+function openHistory() {
   state.showHistory = true;
   state.historyState = 'loading';
   _render();
@@ -173,12 +171,12 @@ export function openHistory() {
   _render();
 }
 
-export function closeHistory() {
+function closeHistory() {
   state.showHistory = false;
   _render();
 }
 
-export function clearHistory() {
+function clearHistory() {
   try {
     const keys = storeListKeys('entries:');
     for (const k of keys) storeDelete(k);
