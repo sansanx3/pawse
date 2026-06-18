@@ -1,12 +1,16 @@
-const CACHE = 'pawse-v1';
+const CACHE = 'pawse-v2';
 
 // App shell — everything needed to run offline
 const SHELL = [
   './',
   './index.html',
   './manifest.json',
-  './icon-192.svg',
-  './icon-512.svg',
+  './css/main.css',
+  './js/storage.js',
+  './js/logic.js',
+  './js/ui.js',
+  './icons/icon-192.svg',
+  './icons/icon-512.svg',
 ];
 
 // Pre-cache the shell on first install
