@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#2A2138"/>
+  <!-- Heart centred in the inner 50 % (256 × 256 at 128, 128) — safely inside the maskable safe zone -->
+  <svg x="128" y="128" width="256" height="256" viewBox="0 0 24 24">
+    <path fill="#C28E2A" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </svg>
+</svg>

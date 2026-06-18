@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pawse — Decision Matrix</title>
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- Android / browser theme -->
+  <meta name="theme-color" content="#2A2138" />
+
+  <!-- iOS home screen install -->
+  <link rel="apple-touch-icon" href="./icon-512.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Pawse" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #EDEAF2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 448px;
+      background: #FBFAFC;
+      border-radius: 24px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.10), 0 8px 10px -6px rgba(0,0,0,0.10);
+      padding: 28px;
+      position: relative;
+    }
+
+    /* ── Navigation bar ── */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      height: 20px;
+    }
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #9B8AAE;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      line-height: 1;
+    }
+    .icon-btn:hover { color: #2A2138; }
+
+    /* ── Eyebrow label ── */
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #9B8AAE;
+      margin-bottom: 12px;
+    }
+
+    /* ── Question block ── */
+    .question-wrap { margin-bottom: 28px; }
+    .question-text {
+      font-family: 'Fraunces', serif;
+      font-optical-sizing: auto;
+      font-size: 26px;
+      line-height: 1.2;
+      color: #2A2138;
+      margin-bottom: 8px;
+    }
+    .question-hint {
+      color: #9B8AAE;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    /* ── Choice buttons ── */
+    .choice {
+      width: 100%;
+      text-align: left;
+      padding: 16px 20px;
+      border-radius: 16px;
+      border: 1px solid #E4DEEE;
+      display: block;
+      margin-bottom: 12px;
+      font-weight: 500;
+      font-size: 15px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: #FBFAFC;
+      color: #2A2138;
+      font-family: 'Inter', sans-serif;
+    }
+    .choice:hover { border-color: #C28E2A; background: #F7F0E0; }
+    .choice-primary { background: #2A2138; color: #FBFAFC; border-color: #2A2138; }
+    .choice-primary:hover { background: #3a2e4d; border-color: #3a2e4d; }
+
+    /* ── Start screen ── */
+    .start-wrap { text-align: center; padding: 8px 0; }
+    .pulse-wrap {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pulse-bg {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #C28E2A;
+      animation: pulseGlow 2.6s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.55; }
+      50%       { transform: scale(1.18); opacity: 0.9; }
+    }
+    @media (prefers-reduced-motion: reduce) { .pulse-bg { animation: none; } }
+    .pulse-icon { position: relative; display: flex; }
+
+    .start-title {
+      font-family: 'Fraunces', serif;
+      font-optical-sizing: auto;
+      font-size: 26px;
+      color: #2A2138;
+      margin-bottom: 8px;
+    }
+    .start-sub { color: #6E6380; font-size: 14px; margin-bottom: 24px; }
+
+    .text-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid #E4DEEE;
+      margin-bottom: 24px;
+      color: #2A2138;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      background: #FBFAFC;
+    }
+    .text-input:focus { border-color: #C28E2A; }
+    .text-input::placeholder { color: #9B8AAE; }
+
+    /* ── Create-space body text ── */
+    .body-text { color: #6E6380; font-size: 15px; margin-bottom: 28px; }
+
+    /* ── Space screen warning ── */
+    .still-planned-note {
+      color: #B5762A;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: -12px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Outcome screens ── */
+    .outcome-wrap { text-align: center; padding: 8px 0; }
+    .outcome-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .outcome-title {
+      font-family: 'Fraunces', serif;
+      font-optical-sizing: auto;
+      font-size: 28px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .outcome-sub { color: #6E6380; font-size: 15px; margin-bottom: 20px; }
+    .outcome-body { color: #6E6380; font-size: 14px; margin-bottom: 8px; }
+    .restart-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #6E6380;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-top: 24px;
+    }
+    .restart-btn:hover { color: #2A2138; }
+
+    /* ── History panel ── */
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .history-title {
+      font-family: 'Fraunces', serif;
+      font-optical-sizing: auto;
+      font-size: 22px;
+      color: #2A2138;
+    }
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+    .history-entry { border: 1px solid #E4DEEE; border-radius: 12px; padding: 12px 16px; }
+    .history-entry-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .history-entry-name { font-weight: 500; color: #2A2138; font-size: 15px; }
+    .history-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #F2EFF5;
+    }
+    .history-entry-reason { color: #6E6380; font-size: 13px; margin-bottom: 4px; }
+    .history-entry-date { color: #9B8AAE; font-size: 11px; }
+    .history-msg { color: #6E6380; font-size: 14px; }
+    .history-error { color: #9B3C3C; font-size: 14px; }
+    .clear-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #9B3C3C;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .clear-btn:hover { opacity: 0.75; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+  // ══════════════════════════════════════════════════════════════════
+  // DECISION LOGIC — stage labels, question copy, hint copy
+  // Changing questions, hints, or stage names: edit only this section.
+  // ══════════════════════════════════════════════════════════════════
+
+  const STAGE = {
+    urgent:      'Pace check',
+    scarcity:    'Pace check',
+    createSpace: 'Pace check',
+    trackRecord: 'Realness check',
+    tested:      'Realness check',
+    feel:        'Realness check',
+    habit:       'Fit check',
+    replacement: 'Fit check',
+    alreadyGone: 'Fit check',
+    space:       'Fit check',
+    cycle:       'Fit check',
+  };
+
+  const COPY = {
+    urgent: {
+      question: 'Feels urgent?',
+      hint: 'Most “decide now” feelings turn out to be false alarms.',
+    },
+    scarcity: {
+      question: 'Real, or just impatience?',
+      hint: 'Real scarcity happens sometimes — but usually this is about not wanting to wait, not the item disappearing.',
+    },
+    createSpace: {
+      question: 'Create space',
+      body: 'Wait. Sleep on it. Revisit later. Only come back to this once the urgency has actually cooled — there’s no rush to press on right now.',
+    },
+    trackRecord: {
+      question: 'Real history with this exact thing?',
+      hint: 'Liking the brand or category isn’t the same as having proof with this exact thing.',
+    },
+    tested: {
+      question: 'Tried it, not just imagined?',
+      hint: 'An imagined want and a tested one are different things — testing tells the truth before money does.',
+    },
+    feel: {
+      question: 'Joy, or just neutral?',
+      hint: 'Neutral isn’t a soft yes — it’s the same signal that predicted regret before.',
+    },
+    habit: {
+      question: 'New habit, or fits one I have?',
+      hint: 'Loving something doesn’t guarantee it gets used — it has to fit a rhythm already being lived, not a new one.',
+    },
+    replacement: {
+      question: 'Replacing something I own?',
+      hint: 'A planned swap doesn’t free up space until it actually happens.',
+    },
+    alreadyGone: {
+      question: 'Already gone, or still planned?',
+      hint: 'This decides whether the space check gets to count space that hasn’t really been freed yet.',
+    },
+    space: {
+      question: 'Overflows the space I’ve made?',
+      hint: 'The feeling that actually makes “no” stick — more than any abstract clutter-avoidance rule.',
+    },
+    cycle: {
+      question: 'Deepens the stuckness?',
+      hint: '“Stuckness” means the trapped feeling at month-end — not the dollar amount itself.',
+    },
+  };
+
+  // ══════════════════════════════════════════════
+  // STORAGE — localStorage with 'pawse:' prefix
+  // ══════════════════════════════════════════════
+
+  const PREFIX = 'pawse:';
+
+  function storeSave(key, value) {
+    localStorage.setItem(PREFIX + key, value);
+  }
+
+  function storeGet(key) {
+    return localStorage.getItem(PREFIX + key);
+  }
+
+  function storeDelete(key) {
+    localStorage.removeItem(PREFIX + key);
+  }
+
+  function storeListKeys(subPrefix) {
+    const full = PREFIX + subPrefix;
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(full)) keys.push(k.slice(PREFIX.length));
+    }
+    return keys;
+  }
+
+  // ══════════════════════════════════════════════
+  // STATE
+  // ══════════════════════════════════════════════
+
+  const state = {
+    screen: 'start',
+    itemName: '',
+    stillPlanned: false,
+    dontBuyReason: '',
+    showHistory: false,
+    history: [],
+    historyState: 'idle',   // idle | loading | ready | error
+    navStack: [],           // [{ screen, stillPlanned }]
+  };
+
+  function goTo(next, sideEffect) {
+    state.navStack = [...state.navStack, { screen: state.screen, stillPlanned: state.stillPlanned }];
+    if (sideEffect) sideEffect();
+    state.screen = next;
+    render();
+  }
+
+  function goBack() {
+    if (state.navStack.length === 0) return;
+    const last = state.navStack[state.navStack.length - 1];
+    state.navStack = state.navStack.slice(0, -1);
+    state.screen = last.screen;
+    state.stillPlanned = last.stillPlanned;
+    render();
+  }
+
+  function reset() {
+    state.screen = 'start';
+    state.itemName = '';
+    state.stillPlanned = false;
+    state.dontBuyReason = '';
+    state.navStack = [];
+    render();
+  }
+
+  function logOutcome(outcome, reason) {
+    try {
+      const id = Date.now().toString();
+      const entry = { id, itemName: state.itemName.trim() || 'Untitled', outcome, reason: reason || '', date: new Date().toISOString() };
+      storeSave('entries:' + id, JSON.stringify(entry));
+    } catch (e) {
+      console.error('Could not save entry', e);
+    }
+  }
+
+  function goDontBuy(reason) {
+    state.dontBuyReason = reason;
+    goTo('dontBuy');
+    logOutcome("Don't buy", reason);
+  }
+
+  function goBuyIt() {
+    goTo('buyIt');
+    logOutcome('Buy it', '');
+  }
+
+  function goNotYet() {
+    goTo('notYet');
+    logOutcome('Not yet', "Hasn't been tested");
+  }
+
+  function openHistory() {
+    state.showHistory = true;
+    state.historyState = 'loading';
+    render();
+    try {
+      const keys = storeListKeys('entries:');
+      const entries = [];
+      for (const k of keys) {
+        try { const raw = storeGet(k); if (raw) entries.push(JSON.parse(raw)); } catch (_) {}
+      }
+      entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+      state.history = entries;
+      state.historyState = 'ready';
+    } catch (_) {
+      state.historyState = 'error';
+    }
+    render();
+  }
+
+  function closeHistory() {
+    state.showHistory = false;
+    render();
+  }
+
+  function clearHistory() {
+    try {
+      const keys = storeListKeys('entries:');
+      for (const k of keys) storeDelete(k);
+      state.history = [];
+      render();
+    } catch (_) {
+      state.historyState = 'error';
+      render();
+    }
+  }
+
+  // ══════════════════════════════════════════════
+  // SVG ICONS (inlined, sized to match prototype)
+  // ══════════════════════════════════════════════
+
+  const ICON = {
+    arrowLeft:  `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
+    history:    `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95L1 10"/></svg>`,
+    x:          `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    rotateCcw:  `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>`,
+    trash2:     `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`,
+    heartGold:  `<svg width="26" height="26" viewBox="0 0 24 24" fill="#C28E2A" stroke="#C28E2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+    heartGreen: `<svg width="24" height="24" viewBox="0 0 24 24" fill="#2F6B45" stroke="#2F6B45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+    xRed:       `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9B3C3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    clockAmber: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B5762A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  };
+
+  // ══════════════════════════════════════════════════════════════════
+  // RENDER — translates state into DOM; no logic here, only markup
+  // ══════════════════════════════════════════════════════════════════
+
+  const OUTCOME_COLOR = { 'Buy it': '#2F6B45', "Don't buy": '#9B3C3C', 'Not yet': '#B5762A' };
+
+  function esc(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function navBar() {
+    const back = state.screen !== 'start'
+      ? `<button class="icon-btn" id="btn-back" aria-label="Back to previous question">${ICON.arrowLeft}</button>`
+      : `<span></span>`;
+    const hist = state.screen === 'start'
+      ? `<button class="icon-btn" id="btn-history" aria-label="View history">${ICON.history}</button>`
+      : `<span></span>`;
+    return `<div class="nav-bar">${back}${hist}</div>`;
+  }
+
+  function eyebrow(key) {
+    return STAGE[key] ? `<div class="eyebrow">${esc(STAGE[key])}</div>` : '';
+  }
+
+  function question(key) {
+    const c = COPY[key];
+    const hint = c.hint ? `<p class="question-hint">${esc(c.hint)}</p>` : '';
+    return `<div class="question-wrap"><h2 class="question-text">${esc(c.question)}</h2>${hint}</div>`;
+  }
+
+  function choice(label, id, primary) {
+    const cls = primary ? 'choice choice-primary' : 'choice';
+    return `<button class="${cls}" id="${id}">${esc(label)}</button>`;
+  }
+
+  function outcome({ icon, bg, color, title, subtitle, bodyText }) {
+    const sub  = subtitle ? `<p class="outcome-sub">${esc(subtitle)}</p>` : '';
+    const body = bodyText ? `<p class="outcome-body">${esc(bodyText)}</p>` : '';
+    return `<div class="outcome-wrap">
+      <div class="outcome-icon" style="background:${bg}">${icon}</div>
+      <h2 class="outcome-title" style="color:${color}">${esc(title)}</h2>
+      ${sub}${body}
+      <button class="restart-btn" id="btn-restart">${ICON.rotateCcw} Start over</button>
+    </div>`;
+  }
+
+  function screenHTML() {
+    const s = state.screen;
+
+    if (s === 'start') return `
+      <div class="start-wrap">
+        <div class="pulse-wrap">
+          <div class="pulse-bg"></div>
+          <span class="pulse-icon">${ICON.heartGold}</span>
+        </div>
+        <h1 class="start-title">Feel the pull</h1>
+        <p class="start-sub">What’s pulling at you right now?</p>
+        <input id="item-input" type="text" class="text-input"
+          placeholder="e.g. that lens, those shoes…"
+          value="${esc(state.itemName)}" />
+        ${choice('Walk through it →', 'btn-start', true)}
+      </div>`;
+
+    if (s === 'urgent') return `
+      ${eyebrow(s)}${question(s)}
+      ${choice('Feels urgent', 'btn-urgent-yes')}
+      ${choice('Can decide later instead', 'btn-urgent-no')}`;
+
+    if (s === 'scarcity') return `
+      ${eyebrow(s)}${question(s)}
+      ${choice('It’s genuinely scarce', 'btn-scarce-yes')}
+      ${choice('I’m just impatient', 'btn-scarce-no')}`;
+
+    if (s === 'createSpace') return `
+      ${eyebrow(s)}${question(s)}
+      <p class="body-text">${esc(COPY.createSpace.body)}</p>
+      ${choice('I’ve created that space — continue', 'btn-space-created', true)}`;
+
+    if (s === 'trackRecord') return `
+      ${eyebrow(s)}${question(s)}
+      ${choice('Strong history with this exact thing', 'btn-track-yes')}
+      ${choice('No real history with it', 'btn-track-no')}`;
+
+    if (s === 'tested') return `
+      ${eyebrow(s)}${question(s)}
+      ${choice('Yes, I’ve actually tried it', 'btn-tested-yes')}
+      ${choice('Not yet — only imagined it', 'btn-tested-no')}`;
+
+    if (s === 'notYet') return outcome({
+      icon: ICON.clockAmber, bg: '#F4E8D6', color: '#B5762A',
+      title: 'Not yet',
+      subtitle: 'This isn’t a no — find a way to test it first.',
+      bodyText: 'Try it, borrow it, ask someone who’s used it, or just let time pass and see if the want survives.',
+    });
+
+    if (s === 'feel') return `
+      ${eyebrow(s)}${question(s)}
+      ${choice('It felt like joy', 'btn-feel-joy')}
+      ${choice('It felt neutral', 'btn-feel-neutral')}`;
+
+    if (s === 'habit') return `
+      ${eyebrow(s)}${question(s)}
+      ${choice('Fits a habit I already have', 'btn-habit-yes')}
+      ${choice('Would need a new habit', 'btn-habit-no')}`;
+
+    if (s === 'replacement') return `
+      ${eyebrow(s)}${question(s)}
+      ${choice('Yes, replacing something', 'btn-replace-yes')}
+      ${choice('No, not replacing anything', 'btn-replace-no')}`;
+
+    if (s === 'alreadyGone') return `
+      ${eyebrow(s)}${question(s)}
+      ${choice('Already gone', 'btn-gone-yes')}
+      ${choice('Still just planned', 'btn-gone-no')}`;
+
+    if (s === 'space') {
+      const warn = state.stillPlanned
+        ? `<p class="still-planned-note">Remember: answer as if nothing has left yet.</p>`
+        : '';
+      return `
+        ${eyebrow(s)}${question(s)}
+        ${warn}
+        ${choice('No, it fits', 'btn-space-fits')}
+        ${choice('Yes, it overflows', 'btn-space-overflow')}`;
+    }
+
+    if (s === 'cycle') return `
+      ${eyebrow(s)}${question(s)}
+      ${choice('Stays clear', 'btn-cycle-clear')}
+      ${choice('Deepens it', 'btn-cycle-deepen')}`;
+
+    if (s === 'dontBuy') return outcome({
+      icon: ICON.xRed, bg: '#F3E2E0', color: '#9B3C3C',
+      title: 'Don’t buy',
+      subtitle: state.dontBuyReason,
+    });
+
+    if (s === 'buyIt') return outcome({
+      icon: ICON.heartGreen, bg: '#DFF0E4', color: '#2F6B45',
+      title: 'Buy it',
+      subtitle: 'Every check held. Go ahead.',
+    });
+
+    return '';
+  }
+
+  function historyHTML() {
+    let body = '';
+    if (state.historyState === 'loading') {
+      body = `<p class="history-msg">Loading past entries…</p>`;
+    } else if (state.historyState === 'error') {
+      body = `<p class="history-error">Couldn’t load history. Try again later.</p>`;
+    } else if (state.history.length === 0) {
+      body = `<p class="history-msg">Nothing logged yet — entries appear here once you reach an outcome.</p>`;
+    } else {
+      const rows = state.history.map(h => {
+        const color = OUTCOME_COLOR[h.outcome] || '#6E6380';
+        const reason = h.reason ? `<p class="history-entry-reason">${esc(h.reason)}</p>` : '';
+        const d = new Date(h.date);
+        const ds = d.toLocaleDateString() + ' · ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return `<div class="history-entry">
+          <div class="history-entry-top">
+            <span class="history-entry-name">${esc(h.itemName)}</span>
+            <span class="history-badge" style="color:${color}">${esc(h.outcome)}</span>
+          </div>
+          ${reason}
+          <p class="history-entry-date">${ds}</p>
+        </div>`;
+      }).join('');
+      body = `<div class="history-list">${rows}</div>
+        <button class="clear-btn" id="btn-clear-history">${ICON.trash2} Clear history</button>`;
+    }
+    return `<div>
+      <div class="history-header">
+        <h2 class="history-title">History</h2>
+        <button class="icon-btn" id="btn-close-history" aria-label="Close history">${ICON.x}</button>
+      </div>
+      ${body}
+    </div>`;
+  }
+
+  function render() {
+    const app = document.getElementById('app');
+    if (!app) return;
+    app.innerHTML = state.showHistory ? historyHTML() : navBar() + screenHTML();
+    bindEvents();
+  }
+
+  function on(id, fn) {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', fn);
+  }
+
+  function bindEvents() {
+    // Navigation
+    on('btn-back',          goBack);
+    on('btn-history',       openHistory);
+    on('btn-close-history', closeHistory);
+    on('btn-clear-history', clearHistory);
+    on('btn-restart',       reset);
+
+    // Start screen: keep itemName in sync; allow Enter to proceed
+    const inp = document.getElementById('item-input');
+    if (inp) {
+      inp.addEventListener('input', e => { state.itemName = e.target.value; });
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') goTo('urgent'); });
+      inp.focus();
+      inp.setSelectionRange(inp.value.length, inp.value.length);
+    }
+
+    // Question screens
+    on('btn-start',           () => goTo('urgent'));
+    on('btn-urgent-yes',      () => goTo('scarcity'));
+    on('btn-urgent-no',       () => goTo('trackRecord'));
+    on('btn-scarce-yes',      () => goTo('trackRecord'));
+    on('btn-scarce-no',       () => goTo('createSpace'));
+    on('btn-space-created',   () => goTo('trackRecord'));
+    on('btn-track-yes',       () => goTo('habit'));
+    on('btn-track-no',        () => goTo('tested'));
+    on('btn-tested-yes',      () => goTo('feel'));
+    on('btn-tested-no',       goNotYet);
+    on('btn-feel-joy',        () => goTo('habit'));
+    on('btn-feel-neutral',    () => goDontBuy('Not real enough — testing came back neutral'));
+    on('btn-habit-yes',       () => goTo('replacement'));
+    on('btn-habit-no',        () => goDontBuy('Would need a new habit to actually use it'));
+    on('btn-replace-yes',     () => goTo('alreadyGone'));
+    on('btn-replace-no',      () => goTo('space', () => { state.stillPlanned = false; }));
+    on('btn-gone-yes',        () => goTo('space', () => { state.stillPlanned = false; }));
+    on('btn-gone-no',         () => goTo('space', () => { state.stillPlanned = true; }));
+    on('btn-space-fits',      () => goTo('cycle'));
+    on('btn-space-overflow',  () => goDontBuy('Overflows the space made for it'));
+    on('btn-cycle-clear',     goBuyIt);
+    on('btn-cycle-deepen',    () => goDontBuy('Deepens the stuckness'));
+  }
+
+  render();
+
+  // Register service worker for offline support (requires HTTPS or localhost)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+  </script>
+</body>
+</html>

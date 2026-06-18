@@ -1,0 +1,24 @@
+{
+  "name": "Pawse",
+  "short_name": "Pawse",
+  "description": "Personal purchase decision matrix",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#2A2138",
+  "background_color": "#EDEAF2",
+  "icons": [
+    {
+      "src": "./icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
