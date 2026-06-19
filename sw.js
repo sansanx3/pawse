@@ -1,4 +1,5 @@
-const CACHE = 'pawse-v3';
+const VERSION = '1.1';
+const CACHE = 'pawse-' + VERSION;
 
 // App shell — everything needed to run offline
 const SHELL = [
@@ -33,6 +34,6 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then(hit => hit || fetch(event.request))
+    caches.match(event.request, { ignoreSearch: true }).then(hit => hit || fetch(event.request))
   );
 });

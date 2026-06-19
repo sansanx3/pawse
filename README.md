@@ -27,6 +27,18 @@ manifest.json       Web App Manifest (PWA install metadata)
 sw.js               Service worker — caches the app shell for offline use
 ```
 
+## Shipping updates
+
+Each time you push a change, bump the version in **two places** — keeping them in sync ensures installed PWAs pick up the new files automatically without a force refresh:
+
+1. **`sw.js` line 1** — `const VERSION = '1.1'` → change the string (e.g. `'1.2'`).  
+   This renames the service worker cache. On next visit the browser detects that `sw.js` changed, installs the new worker, deletes the old cache, and re-fetches all assets fresh. `skipWaiting` and `clients.claim` make this happen immediately without waiting for tabs to close.
+
+2. **`index.html`** — update the `?v=1.1` query string on the four local asset references (`main.css`, `storage.js`, `logic.js`, `ui.js`) to match.  
+   This busts the browser's HTTP cache for users who visit without a service worker installed (first visit, or unsupported browser).
+
+The service worker's fetch handler uses `ignoreSearch: true` when checking the cache, so `?v=1.x` requests are served correctly from cached entries regardless of the query string.
+
 ## Editing guide
 
 | What you want to change | Where to look |
