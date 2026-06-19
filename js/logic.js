@@ -14,6 +14,7 @@ const STAGE = {
   createSpace: 'Pace check',
   trackRecord: 'Realness check',
   tested:      'Realness check',
+  gladness:    'Realness check',
   feel:        'Realness check',
   habit:       'Fit check',
   replacement: 'Fit check',
@@ -44,6 +45,10 @@ const COPY = {
   tested: {
     question: 'Tried it, not just imagined?',
     hint: 'An imagined want and a tested one are different things — testing tells the truth before money does.',
+  },
+  gladness: {
+    question: "If this disappoints — am I still glad I have it?",
+    hint: "This is about whether the relationship with this item can survive disappointment — not about whether it'll perform well or get used.",
   },
   feel: {
     question: 'Joy, or just neutral?',
@@ -148,6 +153,11 @@ function goBuyIt() {
 function goNotYet() {
   goTo('notYet');
   logOutcome('Not yet', "Hasn't been tested");
+}
+
+function goFindTest() {
+  goTo('findTest');
+  logOutcome('Not yet', "Can't test it — needs another way in");
 }
 
 // ── History ────────────────────────────────────────────────────────

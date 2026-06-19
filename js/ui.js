@@ -111,7 +111,13 @@ function screenHTML() {
   if (s === 'tested') return `
     ${eyebrow(s)}${question(s)}
     ${choice("Yes, I've actually tried it", 'btn-tested-yes')}
-    ${choice('Not yet — only imagined it', 'btn-tested-no')}`;
+    ${choice('Not yet — but I could test it', 'btn-tested-maybe')}
+    ${choice('No way to test this before buying', 'btn-tested-cant')}`;
+
+  if (s === 'gladness') return `
+    ${eyebrow(s)}${question(s)}
+    ${choice('Yes, still glad either way', 'btn-glad-yes')}
+    ${choice('No', 'btn-glad-no')}`;
 
   if (s === 'notYet') return outcome({
     icon: ICON.clockAmber, bg: '#F4E8D6', color: '#B5762A',
@@ -155,6 +161,13 @@ function screenHTML() {
     ${eyebrow(s)}${question(s)}
     ${choice('Stays clear', 'btn-cycle-clear')}
     ${choice('Deepens it', 'btn-cycle-deepen')}`;
+
+  if (s === 'findTest') return outcome({
+    icon: ICON.clockAmber, bg: '#F4E8D6', color: '#B5762A',
+    title: 'Find a way to test this first',
+    subtitle: "Not having a normal testing path doesn't excuse skipping evidence.",
+    bodyText: "Try a secondhand unit, find someone who owns one, or see it in person another way. Real information before real money.",
+  });
 
   if (s === 'dontBuy') return outcome({
     icon: ICON.xRed, bg: '#F3E2E0', color: '#9B3C3C',
@@ -247,7 +260,10 @@ function bindEvents() {
   on('btn-track-yes',       () => goTo('habit'));
   on('btn-track-no',        () => goTo('tested'));
   on('btn-tested-yes',      () => goTo('feel'));
-  on('btn-tested-no',       goNotYet);
+  on('btn-tested-maybe',    goNotYet);
+  on('btn-tested-cant',     () => goTo('gladness'));
+  on('btn-glad-yes',        () => goTo('habit'));
+  on('btn-glad-no',         goFindTest);
   on('btn-feel-joy',        () => goTo('habit'));
   on('btn-feel-neutral',    () => goDontBuy('Not real enough — testing came back neutral'));
   on('btn-habit-yes',       () => goTo('replacement'));
