@@ -1,4 +1,4 @@
-const VERSION = '1.1';
+const VERSION = '1.2';
 const CACHE = 'pawse-' + VERSION;
 
 // App shell — everything needed to run offline
