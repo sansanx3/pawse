@@ -136,6 +136,11 @@ function screenHTML() {
     ${choice('Fits a habit I already have', 'btn-habit-yes')}
     ${choice('Would need a new habit', 'btn-habit-no')}`;
 
+  if (s === 'nonNegotiable') return `
+    ${eyebrow(s)}${question(s)}
+    ${choice("Yes, there’s a real rule requiring it", 'btn-nonneg-yes')}
+    ${choice('No, just preferred', 'btn-nonneg-no')}`;
+
   if (s === 'replacement') return `
     ${eyebrow(s)}${question(s)}
     ${choice('Yes, replacing something', 'btn-replace-yes')}
@@ -261,13 +266,15 @@ function bindEvents() {
   on('btn-track-no',        () => goTo('tested'));
   on('btn-tested-yes',      () => goTo('feel'));
   on('btn-tested-maybe',    goNotYet);
-  on('btn-tested-cant',     () => goTo('gladness'));
-  on('btn-glad-yes',        () => goTo('habit'));
-  on('btn-glad-no',         goFindTest);
+  on('btn-tested-cant',     () => goTo('gladness', () => { state.gladnessContext = 'realness'; }));
+  on('btn-glad-yes',        goGladYes);
+  on('btn-glad-no',         goGladNo);
   on('btn-feel-joy',        () => goTo('habit'));
   on('btn-feel-neutral',    () => goDontBuy('Not real enough — testing came back neutral'));
   on('btn-habit-yes',       () => goTo('replacement'));
-  on('btn-habit-no',        () => goDontBuy('Would need a new habit to actually use it'));
+  on('btn-habit-no',        () => goTo('nonNegotiable'));
+  on('btn-nonneg-yes',      () => goTo('gladness', () => { state.gladnessContext = 'nonNegotiable'; }));
+  on('btn-nonneg-no',       () => goDontBuy('Would need a new habit to actually use it'));
   on('btn-replace-yes',     () => goTo('alreadyGone'));
   on('btn-replace-no',      () => goTo('space', () => { state.stillPlanned = false; }));
   on('btn-gone-yes',        () => goTo('space', () => { state.stillPlanned = false; }));

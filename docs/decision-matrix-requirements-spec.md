@@ -60,8 +60,17 @@ Even once a want is confirmed real, several things can still make it wrong — a
 
 **4a. Habit check** — Would this require a new habit to actually use, or does it fit a frequency already lived at?
 - Reasoning: loving something doesn't guarantee it gets used. The clear failure case is something that needs a usage pattern that doesn't already exist — a shampoo for once-a-month use when hair is washed daily, for instance. This doesn't penalize categories where feeling alone is the point (display items) or where a new item slots into an already-existing daily habit (everyday clothing) — in both cases the honest answer naturally comes out as "fits."
-- Needs a new habit → outcome: **Don't buy**.
 - Fits an existing frequency → go to 4b.
+- Needs a new habit → go to 4a-i, rather than failing immediately. There's a real, legitimate case this is meant to catch: intentionally starting a new habit (a sport, journaling), where the purchase isn't replacing an existing pattern but is part of building one. The general rule (prove the habit first, with what's already owned, before buying anything dedicated for it — exactly as happened with journaling on an existing notebook before the reMarkable, or reusing exercise clothes for Pilates before buying only the required socks) still applies and should be the default expectation. 4a-i exists only for the narrow exception where nothing already owned can substitute.
+
+**4a-i. Non-negotiable check** — Is this truly required, not just preferred — a real external requirement (a studio policy, a stated rule, something enforced by someone else), not just something that would help or feel nicer to have?
+- Reasoning: this question has to be answered against a nameable, external rule, not a felt sense of necessity — otherwise "needed" quietly stretches to justify anything. Grip socks required by a studio pass this cleanly; a nicer journal or better running shoes almost always fail it, since nothing external is actually stopping use without them.
+- No → outcome: **Don't buy**. Falls back to the original rule — go prove the habit with what's already owned first.
+- Yes → go to 4a-ii.
+
+**4a-ii. Gladness check (shared)** — *If this doesn't turn out the way I'm hoping — am I still glad I have it?* This is the same question and same node used in the realness check for genuinely untestable items (3b-i) — here it's reused with the same wording, just applied to whether the habit sticks rather than whether an untestable item performs. No new node, no new language required; the trigger is just different.
+- No → outcome: **Don't buy**.
+- Yes → continue to 4b, treated the same as fitting an existing frequency.
 
 **4b. Replacement check** — Is this meant to replace something already owned?
 - Reasoning: a purchase justified as "this will replace X" often gets the space question answered as if the replacement has already happened, when it's still just a plan. The space math only holds if the old thing actually leaves.
@@ -82,7 +91,7 @@ Even once a want is confirmed real, several things can still make it wrong — a
 ## Final outcomes
 
 - **Buy it** — every check passed: a real, grounded want, fitting an existing habit, with no felt cost in space or in the cycle.
-- **Don't buy** — failed at the realness check (no joy), or at the fit check (a new habit would be needed, the space math doesn't hold once the replacement assumption is corrected for, or the cycle deepens).
+- **Don't buy** — failed at the realness check (no joy), or at the fit check (a new habit would be needed with no real external requirement and no proof the habit will stick, the space math doesn't hold once the replacement assumption is corrected for, or the cycle deepens).
 - **Not yet** — not quite a single outcome anymore. For items that *could* be tested but haven't been, this interrupts the old "buy now, think later" default and redirects toward finding a way to gain real information first — and this case is allowed to sit unresolved indefinitely. For items that genuinely *can't* be tested and also fail the gladness check, "not yet" becomes a firmer requirement to find some way to test, however unconventional, before deciding.
 
 ## Notes for implementation

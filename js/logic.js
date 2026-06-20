@@ -9,18 +9,19 @@
 // ── Stage labels (eyebrow text shown above each question) ──────────
 
 const STAGE = {
-  urgent:      'Pace check',
-  scarcity:    'Pace check',
-  createSpace: 'Pace check',
-  trackRecord: 'Realness check',
-  tested:      'Realness check',
-  gladness:    'Realness check',
-  feel:        'Realness check',
-  habit:       'Fit check',
-  replacement: 'Fit check',
-  alreadyGone: 'Fit check',
-  space:       'Fit check',
-  cycle:       'Fit check',
+  urgent:          'Pace check',
+  scarcity:        'Pace check',
+  createSpace:     'Pace check',
+  trackRecord:     'Realness check',
+  tested:          'Realness check',
+  gladness:        'Realness check',
+  feel:            'Realness check',
+  habit:           'Fit check',
+  nonNegotiable:   'Fit check',
+  replacement:     'Fit check',
+  alreadyGone:     'Fit check',
+  space:           'Fit check',
+  cycle:           'Fit check',
 };
 
 // ── All question text, hints, and body copy ────────────────────────
@@ -55,8 +56,12 @@ const COPY = {
     hint: 'Neutral isn’t a soft yes — it’s the same signal that predicted regret before.',
   },
   habit: {
-    question: 'New habit, or fits one I have?',
-    hint: 'Loving something doesn’t guarantee it gets used — it has to fit a rhythm already being lived, not a new one.',
+    question: ‘New habit, or fits one I have?’,
+    hint: ‘Loving something doesn’t guarantee it gets used — it has to fit a rhythm already being lived, not a new one.’,
+  },
+  nonNegotiable: {
+    question: ‘Is this truly required, not just preferred?’,
+    hint: ‘A real external requirement — a studio policy, a stated rule — not just something that would help.’,
   },
   replacement: {
     question: 'Replacing something I own?',
@@ -79,14 +84,15 @@ const COPY = {
 // ── App state ──────────────────────────────────────────────────────
 
 const state = {
-  screen:       'start',
-  itemName:     '',
-  stillPlanned: false,
-  dontBuyReason: '',
-  showHistory:  false,
-  history:      [],
-  historyState: 'idle',  // idle | loading | ready | error
-  navStack:     [],      // [{ screen, stillPlanned }]
+  screen:          'start',
+  itemName:        '',
+  stillPlanned:    false,
+  gladnessContext: 'realness',  // 'realness' | 'nonNegotiable'
+  dontBuyReason:   '',
+  showHistory:     false,
+  history:         [],
+  historyState:    'idle',  // idle | loading | ready | error
+  navStack:        [],      // [{ screen, stillPlanned, gladnessContext }]
 };
 
 // ui.js injects its render function here so logic can trigger re-renders
@@ -97,7 +103,7 @@ function setRenderCallback(fn) { _render = fn; }
 // ── Navigation ─────────────────────────────────────────────────────
 
 function goTo(next, sideEffect) {
-  state.navStack = [...state.navStack, { screen: state.screen, stillPlanned: state.stillPlanned }];
+  state.navStack = [...state.navStack, { screen: state.screen, stillPlanned: state.stillPlanned, gladnessContext: state.gladnessContext }];
   if (sideEffect) sideEffect();
   state.screen = next;
   _render();
@@ -109,6 +115,7 @@ function goBack() {
   state.navStack = state.navStack.slice(0, -1);
   state.screen = last.screen;
   state.stillPlanned = last.stillPlanned;
+  state.gladnessContext = last.gladnessContext ?? 'realness';
   _render();
 }
 
@@ -116,6 +123,7 @@ function reset() {
   state.screen = 'start';
   state.itemName = '';
   state.stillPlanned = false;
+  state.gladnessContext = 'realness';
   state.dontBuyReason = '';
   state.navStack = [];
   _render();
@@ -158,6 +166,22 @@ function goNotYet() {
 function goFindTest() {
   goTo('findTest');
   logOutcome('Not yet', "Can't test it — needs another way in");
+}
+
+function goGladYes() {
+  if (state.gladnessContext === 'nonNegotiable') {
+    goTo('replacement');
+  } else {
+    goTo('habit');
+  }
+}
+
+function goGladNo() {
+  if (state.gladnessContext === 'nonNegotiable') {
+    goDontBuy('Would need a new habit — not glad to have it regardless');
+  } else {
+    goFindTest();
+  }
 }
 
 // ── History ────────────────────────────────────────────────────────
