@@ -56,12 +56,12 @@ const COPY = {
     hint: 'Neutral isn’t a soft yes — it’s the same signal that predicted regret before.',
   },
   habit: {
-    question: ‘New habit, or fits one I have?’,
-    hint: ‘Loving something doesn’t guarantee it gets used — it has to fit a rhythm already being lived, not a new one.’,
+    question: 'New habit, or fits one I have?',
+    hint: 'Loving something doesn’t guarantee it gets used — it has to fit a rhythm already being lived, not a new one.',
   },
   nonNegotiable: {
-    question: ‘Is this truly required, not just preferred?’,
-    hint: ‘A real external requirement — a studio policy, a stated rule — not just something that would help.’,
+    question: 'Is this truly required, not just preferred?',
+    hint: 'A real external requirement — a studio policy, a stated rule — not just something that would help.',
   },
   replacement: {
     question: 'Replacing something I own?',
